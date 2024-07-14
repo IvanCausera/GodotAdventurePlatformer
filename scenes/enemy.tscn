@@ -1,8 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://p0usv46jis30"]
+[gd_scene load_steps=19 format=3 uid="uid://p0usv46jis30"]
 
 [ext_resource type="Script" path="res://scripts/enemy.gd" id="1_s1ak4"]
 [ext_resource type="Texture2D" uid="uid://dcqn10bljvbl6" path="res://assets/sprites/slime_green.png" id="1_x5ywa"]
 [ext_resource type="PackedScene" uid="uid://ivjoj57360vi" path="res://scenes/killzone.tscn" id="2_wi0vx"]
+[ext_resource type="PackedScene" uid="uid://cxjgagri7s5js" path="res://scenes/strike_zone.tscn" id="3_l1dyj"]
+[ext_resource type="AudioStream" uid="uid://ckkqhwn2iokto" path="res://assets/sounds/Monster/MonsterDie.wav" id="4_ro724"]
+[ext_resource type="AudioStream" uid="uid://digxjhoyry4wd" path="res://assets/sounds/Monster/MonsterDieB.wav" id="5_o23rt"]
+[ext_resource type="AudioStream" uid="uid://b8lgkrat1115s" path="res://assets/sounds/Monster/MonstersoundsA.wav" id="6_4fl8m"]
+[ext_resource type="AudioStream" uid="uid://b0wmlesicwqcw" path="res://assets/sounds/Monster/MonstersoundsB.wav" id="7_1nuxg"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ph4eh"]
 atlas = ExtResource("1_x5ywa")
@@ -19,6 +24,18 @@ region = Rect2(48, 24, 24, 24)
 [sub_resource type="AtlasTexture" id="AtlasTexture_odk0w"]
 atlas = ExtResource("1_x5ywa")
 region = Rect2(72, 24, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1eckl"]
+atlas = ExtResource("1_x5ywa")
+region = Rect2(0, 48, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rd4wh"]
+atlas = ExtResource("1_x5ywa")
+region = Rect2(24, 48, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3kmsn"]
+atlas = ExtResource("1_x5ywa")
+region = Rect2(48, 48, 24, 24)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_7wa8e"]
 animations = [{
@@ -38,7 +55,24 @@ animations = [{
 "loop": true,
 "name": &"default",
 "speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1eckl")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rd4wh")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3kmsn")
+}],
+"loop": false,
+"name": &"die",
+"speed": 5.0
 }]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_qlp8a"]
+size = Vector2(8, 4)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vj2ip"]
 size = Vector2(10, 11)
@@ -49,8 +83,17 @@ script = ExtResource("1_s1ak4")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_7wa8e")
+animation = &"die"
 autoplay = "default"
-frame_progress = 0.466498
+frame = 2
+frame_progress = 1.0
+
+[node name="StrikeZone" parent="." node_paths=PackedStringArray("enemy") instance=ExtResource("3_l1dyj")]
+enemy = NodePath("..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StrikeZone"]
+position = Vector2(0, -14)
+shape = SubResource("RectangleShape2D_qlp8a")
 
 [node name="Killzone" parent="." instance=ExtResource("2_wi0vx")]
 
@@ -65,3 +108,23 @@ target_position = Vector2(11, 0)
 [node name="RayCastLeft" type="RayCast2D" parent="."]
 position = Vector2(0, -7)
 target_position = Vector2(-11, 0)
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="DieSoundA" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("4_ro724")
+max_distance = 100.0
+
+[node name="DieSoundB" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("5_o23rt")
+max_distance = 100.0
+
+[node name="MonsterSoundA" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("6_4fl8m")
+max_distance = 500.0
+bus = &"SFX"
+
+[node name="MonsterSoundB" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("7_1nuxg")
+max_distance = 500.0
+bus = &"SFX"

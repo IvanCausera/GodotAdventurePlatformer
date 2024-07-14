@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://cxjgagri7s5js"]
+
+[ext_resource type="Script" path="res://scripts/strike_zone.gd" id="1_uy4q3"]
+
+[node name="StrikeZone" type="Area2D"]
+collision_mask = 2
+script = ExtResource("1_uy4q3")
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

@@ -1,7 +1,12 @@
-[gd_scene load_steps=26 format=3 uid="uid://n5htph28fwg8"]
+[gd_scene load_steps=33 format=3 uid="uid://n5htph28fwg8"]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_au3mg"]
 [ext_resource type="Texture2D" uid="uid://bxbbc408u3ktg" path="res://assets/sprites/knight.png" id="1_r6ojm"]
+[ext_resource type="AudioStream" uid="uid://rsxbfbexpf4u" path="res://assets/sounds/MC/footstepsrun.wav" id="3_f0qom"]
+[ext_resource type="AudioStream" uid="uid://cdkc5b2bdcsi1" path="res://assets/sounds/MC/Jump4.wav" id="4_kgdfh"]
+[ext_resource type="AudioStream" uid="uid://c3o26yboxiukx" path="res://assets/sounds/MC/MCDie.wav" id="5_ipptw"]
+[ext_resource type="AudioStream" uid="uid://oeeyu2wbtle" path="res://assets/sounds/MC/MCFall.wav" id="6_kkge1"]
+[ext_resource type="AudioStream" uid="uid://bca2txgke0u44" path="res://assets/sounds/MC/MCturnCape .wav" id="7_ibw0a"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_pp8op"]
 atlas = ExtResource("1_r6ojm")
@@ -171,6 +176,26 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_064xp"]
 radius = 5.0
 
+[sub_resource type="Animation" id="Animation_uspkf"]
+resource_name = "run"
+length = 10.0
+tracks/0/type = "audio"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sounds/RunSound")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"clips": [],
+"times": PackedFloat32Array()
+}
+tracks/0/use_blend = true
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cgc2l"]
+_data = {
+"run": SubResource("Animation_uspkf")
+}
+
 [node name="Player" type="CharacterBody2D"]
 z_index = 5
 collision_layer = 2
@@ -179,9 +204,33 @@ script = ExtResource("1_au3mg")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_jj3ay")
-animation = &"jump"
+animation = &"run"
 autoplay = "idle"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_064xp")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_cgc2l")
+}
+
+[node name="Sounds" type="Node" parent="."]
+
+[node name="RunSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("3_f0qom")
+bus = &"SFX"
+
+[node name="JumpSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("4_kgdfh")
+bus = &"SFX"
+
+[node name="DieSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("5_ipptw")
+
+[node name="FallSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("6_kkge1")
+
+[node name="TurnSound" type="AudioStreamPlayer2D" parent="Sounds"]
+stream = ExtResource("7_ibw0a")
